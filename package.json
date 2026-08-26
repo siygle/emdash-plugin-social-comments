@@ -1,7 +1,7 @@
 {
   "name": "emdash-plugin-bluesky-comments",
-  "version": "0.1.0",
-  "description": "Native EmDash plugin and Astro component for Bluesky-powered comments.",
+  "version": "0.2.0",
+  "description": "Native EmDash plugin and Astro components for Giscus + Bluesky comments.",
   "private": false,
   "type": "module",
   "exports": {
@@ -9,8 +9,16 @@
     "./astro": "./src/astro/index.ts",
     "./astro/BlueskyComments.astro": "./src/astro/BlueskyComments.astro"
   },
-  "files": ["src"],
-  "keywords": ["emdash", "emdash-plugin", "comments", "bluesky", "atproto"],
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "emdash",
+    "emdash-plugin",
+    "comments",
+    "bluesky",
+    "atproto"
+  ],
   "peerDependencies": {
     "emdash": "^0.35.0"
   },

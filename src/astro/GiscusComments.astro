@@ -1,0 +1,64 @@
+---
+import { getPluginSettings } from "emdash";
+
+const settings = await getPluginSettings("bluesky-comments").catch(() => ({}));
+
+function setting(key: string, envValue: string | undefined): string {
+  const value = settings[key];
+  return typeof value === "string" && value.trim() ? value.trim() : (envValue || "");
+}
+
+const giscusRepo = setting("PUBLIC_GISCUS_REPO", import.meta.env.PUBLIC_GISCUS_REPO);
+const giscusRepoId = setting("PUBLIC_GISCUS_REPO_ID", import.meta.env.PUBLIC_GISCUS_REPO_ID);
+const giscusCategory = setting("PUBLIC_GISCUS_CATEGORY", import.meta.env.PUBLIC_GISCUS_CATEGORY);
+const giscusCategoryId = setting("PUBLIC_GISCUS_CATEGORY_ID", import.meta.env.PUBLIC_GISCUS_CATEGORY_ID);
+---
+
+<div
+  class="giscus-comments"
+  data-giscus-container
+  data-repo={giscusRepo}
+  data-repo-id={giscusRepoId}
+  data-category={giscusCategory}
+  data-category-id={giscusCategoryId}
+></div>
+
+<script>
+  function loadGiscus() {
+    const containers = document.querySelectorAll<HTMLElement>("[data-giscus-container]");
+    for (const container of containers) {
+      container.innerHTML = "";
+
+      const repo = container.dataset.repo;
+      const repoId = container.dataset.repoId;
+      const category = container.dataset.category;
+      const categoryId = container.dataset.categoryId;
+
+      if (!repo || !repoId || !category || !categoryId) {
+        container.innerHTML = '<p class="comments-empty">Giscus is not configured. Set PUBLIC_GISCUS_REPO, PUBLIC_GISCUS_REPO_ID, PUBLIC_GISCUS_CATEGORY, and PUBLIC_GISCUS_CATEGORY_ID in the plugin settings.</p>';
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = "https://giscus.app/client.js";
+      script.setAttribute("data-repo", repo);
+      script.setAttribute("data-repo-id", repoId);
+      script.setAttribute("data-category", category);
+      script.setAttribute("data-category-id", categoryId);
+      script.setAttribute("data-mapping", "pathname");
+      script.setAttribute("data-strict", "0");
+      script.setAttribute("data-reactions-enabled", "1");
+      script.setAttribute("data-emit-metadata", "0");
+      script.setAttribute("data-input-position", "top");
+      script.setAttribute("data-theme", document.documentElement.classList.contains("dark") ? "dark" : "light");
+      script.setAttribute("data-lang", "en");
+      script.setAttribute("data-loading", "lazy");
+      script.crossOrigin = "anonymous";
+      script.async = true;
+      container.appendChild(script);
+    }
+  }
+
+  loadGiscus();
+  document.addEventListener("astro:after-swap", loadGiscus);
+</script>

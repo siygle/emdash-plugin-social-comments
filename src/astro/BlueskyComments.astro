@@ -1,14 +1,15 @@
 ---
 interface Props {
 	postUrl: string;
+	embedded?: boolean;
 }
 
-const { postUrl } = Astro.props;
+const { postUrl, embedded = false } = Astro.props;
 const blueskyHandle = import.meta.env.PUBLIC_BLUESKY_HANDLE || "sylee.dev";
 ---
 
-<section class="bsky-comments" id="comments">
-	<h2 class="bsky-comments__heading">Comments</h2>
+<section class:list={["bsky-comments", embedded && "bsky-comments--embedded"]} id={embedded ? undefined : "comments"}>
+	{!embedded && <h2 class="bsky-comments__heading">Comments</h2>}
 	<div id="bluesky-comments-container" data-post-url={postUrl} data-handle={blueskyHandle}>
 		<div id="bluesky-comments-loading" class="bsky-comments__loading">
 			<div class="bsky-comments__spinner"></div>
@@ -21,9 +22,36 @@ const blueskyHandle = import.meta.env.PUBLIC_BLUESKY_HANDLE || "sylee.dev";
 
 <style>
 	.bsky-comments {
-		max-width: var(--content-width);
+		--color-bg: #fff;
+		--color-surface: #f3f4f6;
+		--color-bg-subtle: #f9fafb;
+		--color-border: #e5e7eb;
+		--color-border-subtle: #f3f4f6;
+		--color-text: #111827;
+		--color-text-secondary: #374151;
+		--color-muted: #9ca3af;
+		--color-accent: #0d9488;
+		--radius: 0.25rem;
+		--radius-lg: 0.5rem;
+		--font-size-xs: 0.75rem;
+		--font-size-sm: 0.875rem;
+		--font-size-lg: 1.125rem;
+		--spacing-1: 0.25rem;
+		--spacing-2: 0.5rem;
+		--spacing-3: 0.75rem;
+		--spacing-4: 1rem;
+		--spacing-5: 1.25rem;
+		--spacing-6: 1.5rem;
+		--spacing-8: 2rem;
+		--spacing-16: 4rem;
+		--transition-fast: 150ms ease;
+		max-width: 48rem;
 		margin: 0 auto;
-		padding: 0 var(--spacing-6) var(--spacing-16);
+		padding: 0 1.25rem 3rem;
+	}
+	.bsky-comments--embedded {
+		max-width: none;
+		padding: 0;
 	}
 	.bsky-comments__heading {
 		font-size: var(--font-size-lg);
