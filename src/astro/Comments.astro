@@ -1,0 +1,138 @@
+---
+import GiscusComments from "./GiscusComments.astro";
+import BlueskyComments from "./BlueskyComments.astro";
+
+interface Props {
+  postUrl: string;
+  defaultTab?: "giscus" | "bluesky";
+}
+
+const { postUrl, defaultTab = "giscus" } = Astro.props;
+const giscusSelected = defaultTab !== "bluesky";
+---
+
+<section class="comments-plugin" id="comments" data-comments-plugin data-default-tab={defaultTab}>
+  <div class="comments-plugin__inner">
+    <h2 class="comments-plugin__heading">Comments</h2>
+
+    <div class="comments-plugin__tabs" role="tablist" aria-label="Comment systems">
+      <button
+        id="tab-giscus"
+        type="button"
+        role="tab"
+        aria-selected={String(giscusSelected)}
+        aria-controls="panel-giscus"
+        class="comments-plugin__tab"
+        data-comment-tab="giscus"
+      >
+        GitHub
+      </button>
+      <button
+        id="tab-bluesky"
+        type="button"
+        role="tab"
+        aria-selected={String(!giscusSelected)}
+        aria-controls="panel-bluesky"
+        class="comments-plugin__tab"
+        data-comment-tab="bluesky"
+      >
+        Bluesky
+      </button>
+    </div>
+
+    <div id="panel-giscus" role="tabpanel" aria-labelledby="tab-giscus" data-comment-panel="giscus" class:list={[!giscusSelected && "hidden"]}>
+      <GiscusComments />
+    </div>
+    <div id="panel-bluesky" role="tabpanel" aria-labelledby="tab-bluesky" data-comment-panel="bluesky" class:list={[giscusSelected && "hidden"]}>
+      <BlueskyComments postUrl={postUrl} embedded={true} />
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .comments-plugin {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: 0 1.25rem 3rem;
+  }
+  .comments-plugin__inner {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 2rem;
+  }
+  .comments-plugin__heading {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 1.5rem;
+  }
+  .comments-plugin__tabs {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .comments-plugin__tab {
+    padding: 0.5rem 1rem;
+    margin-bottom: -1px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    color: #6b7280;
+    transition: color 150ms ease, border-color 150ms ease;
+  }
+  .comments-plugin__tab[aria-selected="true"] {
+    color: #0d9488;
+    border-bottom-color: #14b8a6;
+  }
+  .comments-plugin__tab[aria-selected="false"]:hover {
+    color: #374151;
+    border-bottom-color: #d1d5db;
+  }
+  .comments-empty {
+    color: #9ca3af;
+    font-size: 0.875rem;
+    text-align: center;
+    padding: 2rem 0;
+  }
+  .hidden { display: none !important; }
+</style>
+
+<script>
+  function initCommentTabs() {
+    const roots = document.querySelectorAll<HTMLElement>("[data-comments-plugin]");
+    for (const root of roots) {
+      if (root.dataset.ready === "true") continue;
+      root.dataset.ready = "true";
+      const tabs = Array.from(root.querySelectorAll<HTMLElement>("[data-comment-tab]"));
+      const panels = Array.from(root.querySelectorAll<HTMLElement>("[data-comment-panel]"));
+
+      function switchTab(active: string) {
+        for (const tab of tabs) {
+          const selected = tab.dataset.commentTab === active;
+          tab.setAttribute("aria-selected", String(selected));
+        }
+        for (const panel of panels) {
+          panel.classList.toggle("hidden", panel.dataset.commentPanel !== active);
+        }
+        try { localStorage.setItem("comment-system", active); } catch {}
+      }
+
+      for (const tab of tabs) {
+        tab.addEventListener("click", () => switchTab(tab.dataset.commentTab || "giscus"));
+      }
+
+      try {
+        const saved = localStorage.getItem("comment-system");
+        if (saved === "giscus" || saved === "bluesky") switchTab(saved);
+      } catch {}
+    }
+  }
+
+  initCommentTabs();
+  document.addEventListener("astro:after-swap", initCommentTabs);
+</script>
