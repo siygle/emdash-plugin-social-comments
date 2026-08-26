@@ -1,0 +1,18 @@
+{
+  "name": "emdash-plugin-bluesky-comments",
+  "version": "0.1.0",
+  "description": "Native EmDash plugin and Astro component for Bluesky-powered comments.",
+  "private": false,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./astro": "./src/astro/index.ts",
+    "./astro/BlueskyComments.astro": "./src/astro/BlueskyComments.astro"
+  },
+  "files": ["src"],
+  "keywords": ["emdash", "emdash-plugin", "comments", "bluesky", "atproto"],
+  "peerDependencies": {
+    "emdash": "^0.35.0"
+  },
+  "license": "MIT"
+}
