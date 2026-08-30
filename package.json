@@ -1,6 +1,6 @@
 {
-  "name": "emdash-plugin-bluesky-comments",
-  "version": "0.2.0",
+  "name": "emdash-plugin-social-comments",
+  "version": "0.3.0",
   "description": "Native EmDash plugin and Astro components for Giscus + Bluesky comments.",
   "private": false,
   "type": "module",
@@ -16,6 +16,7 @@
     "emdash",
     "emdash-plugin",
     "comments",
+    "giscus",
     "bluesky",
     "atproto"
   ],

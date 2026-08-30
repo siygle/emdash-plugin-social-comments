@@ -1,7 +1,9 @@
 ---
 import { getPluginSettings } from "emdash";
 
-const settings = await getPluginSettings("bluesky-comments").catch(() => ({}));
+const currentSettings = await getPluginSettings("social-comments").catch(() => ({}));
+const legacySettings = await getPluginSettings("bluesky-comments").catch(() => ({}));
+const settings = { ...legacySettings, ...currentSettings };
 
 function setting(key: string, envValue: string | undefined): string {
   const value = settings[key];
