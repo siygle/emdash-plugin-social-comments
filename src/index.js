@@ -1,7 +1,8 @@
 import { definePlugin } from "emdash";
 
-const PLUGIN_ID = "bluesky-comments";
-const VERSION = "0.2.0";
+const PLUGIN_ID = "social-comments";
+const VERSION = "0.3.0";
+const PACKAGE_NAME = "emdash-plugin-social-comments";
 
 const settingsSchema = {
   PUBLIC_GISCUS_REPO: {
@@ -26,18 +27,23 @@ const settingsSchema = {
   },
 };
 
-export function blueskyCommentsPlugin(options = {}) {
+export function socialCommentsPlugin(options = {}) {
   return {
     id: PLUGIN_ID,
     version: VERSION,
-    entrypoint: "emdash-plugin-bluesky-comments",
-    componentsEntry: "emdash-plugin-bluesky-comments/astro",
+    entrypoint: PACKAGE_NAME,
+    componentsEntry: `${PACKAGE_NAME}/astro`,
     options,
   };
 }
 
+/** @deprecated Use socialCommentsPlugin() */
+export function blueskyCommentsPlugin(options = {}) {
+  return socialCommentsPlugin(options);
+}
+
 export function commentsPlugin(options = {}) {
-  return blueskyCommentsPlugin(options);
+  return socialCommentsPlugin(options);
 }
 
 export function createPlugin() {
