@@ -1,7 +1,7 @@
 import { definePlugin } from "emdash";
 
 const PLUGIN_ID = "social-comments";
-const VERSION = "0.3.0";
+const VERSION = "0.3.1";
 const PACKAGE_NAME = "emdash-plugin-social-comments";
 
 const settingsSchema = {
